@@ -1,10 +1,2 @@
-# srewoa
-
-Ropsten Addresses
-USDT_Address_r = '0xf501F09e9F98C0B2265F64d3642A80a20B5fDF65'
-GovernanceToken_Address_r ='0xdA542450A284da413e5f9B36AE530877A8252B1b'
-assetFactory_Address_r = '0xc1Afa3aF0B8150F519477CA8379410CD937B033B'
-VoteMachine_Address_r ='0x2e346b01dFBC3671Ba7b35cdB4d5fc7c47558390'
-MarketFactory_Address_r ='0x607eBF62B5B7b7c846001c8E33e761E7555BA166'
-MarketRouter_Address_r ='0x8605bb43DBF4731112ac2cd96Ccc34dDc9691215'
+The smart contracts for the ISSUAA proocol
 
