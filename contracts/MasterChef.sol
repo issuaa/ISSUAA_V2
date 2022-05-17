@@ -38,6 +38,7 @@ contract MasterChefISSV2 is Ownable {
     struct UserInfo {
         uint256 amount; // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
+        uint256 boostFactor; // Boost Factory applied to the rewards payment
         //
         // We do some fancy math here. Basically, any point in time, the amount of ISS tokens
         // entitled to a user but is pending to be distributed is:
@@ -151,10 +152,7 @@ contract MasterChefISSV2 is Ownable {
         uint256 lpSupply = pool.lpToken.balanceOf(address(this));
         if (block.timestamp > pool.lastRewardTimestamp && lpSupply != 0) {
             uint256 multiplier = block.timestamp.sub(pool.lastRewardTimestamp);
-            uint256 lpPercent = 1000;
-            uint256 iSSReward = multiplier.mul(iSSPerSec).mul(pool.allocPoint).div(totalAllocPoint).mul(lpPercent).div(
-                1000
-            );
+            uint256 iSSReward = multiplier.mul(iSSPerSec).mul(pool.allocPoint).div(totalAllocPoint);
             accISSPerShare = accISSPerShare.add(iSSReward.mul(1e12).div(lpSupply));
         }
         pendingISS = user.amount.mul(accISSPerShare).div(1e12).sub(user.rewardDebt);
@@ -174,7 +172,7 @@ contract MasterChefISSV2 is Ownable {
 
     // Update reward variables of the given pool to be up-to-date.
     function updatePool(uint256 _pid) public {
-        PoolInfo storage pool = poolInfo[_pid];
+        PoolInfo storage pool = poolInfo[_pid]; //get the pool data
         if (block.timestamp <= pool.lastRewardTimestamp) {
             return;
         }
@@ -183,18 +181,17 @@ contract MasterChefISSV2 is Ownable {
             pool.lastRewardTimestamp = block.timestamp;
             return;
         }
-        uint256 multiplier = block.timestamp.sub(pool.lastRewardTimestamp);
-        uint256 iSSReward = multiplier.mul(iSSPerSec).mul(pool.allocPoint).div(totalAllocPoint);
-        uint256 lpPercent = 1000;
-        pool.accISSPerShare = pool.accISSPerShare.add(iSSReward.mul(1e12).div(lpSupply).mul(lpPercent).div(1000));
+        uint256 multiplier = block.timestamp.sub(pool.lastRewardTimestamp); // get the number of seconds since the last rewardsTimestamp
+        uint256 iSSReward = multiplier.mul(iSSPerSec).mul(pool.allocPoint).div(totalAllocPoint); // calculate how many ISS tokens have accrued as rewards since last timeStamp
+        pool.accISSPerShare = pool.accISSPerShare.add(iSSReward.mul(1e12).div(lpSupply));
         pool.lastRewardTimestamp = block.timestamp;
         emit UpdatePool(_pid, pool.lastRewardTimestamp, lpSupply, pool.accISSPerShare);
     }
 
     // Deposit LP tokens to MasterChef for ISS allocation.
     function deposit(uint256 _pid, uint256 _amount) public {
-        PoolInfo storage pool = poolInfo[_pid];
-        UserInfo storage user = userInfo[_pid][msg.sender];
+        PoolInfo storage pool = poolInfo[_pid]; //get pool data
+        UserInfo storage user = userInfo[_pid][msg.sender]; //get the user data for this pool
         updatePool(_pid);
         if (user.amount > 0) {
             // Harvest ISS
@@ -239,7 +236,7 @@ contract MasterChefISSV2 is Ownable {
         user.rewardDebt = 0;
     }
 
-    /// @notice Harvest proceeds for transaction sender to `to`.
+    /// @notice Harvest proceeds for msg.sender.
     /// @param _pid The index of the pool. See `poolInfo`.
     function harvest(uint256 _pid) public {
         PoolInfo storage pool = poolInfo[_pid];
@@ -248,6 +245,7 @@ contract MasterChefISSV2 is Ownable {
         uint256 pending = user.amount.mul(pool.accISSPerShare).div(1e12).sub(user.rewardDebt);
         safeISSTransfer(msg.sender, pending);
         emit Harvest(msg.sender, _pid, pending);
+        user.rewardDebt = user.amount.mul(pool.accISSPerShare).div(1e12);
     }
 
     // Safe ISS transfer function, just in case if rounding error causes pool to not have enough ISS tokens.
