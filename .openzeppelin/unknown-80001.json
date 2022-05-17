@@ -1,0 +1,1403 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0xC505e880E56760d24aF86794E4017B8248D9BC5F",
+    "txHash": "0x804e176f3bd190b7a302856743b89d8be4f11125a555fe550289a3ba0c1f6c76"
+  },
+  "proxies": [
+    {
+      "address": "0x48346dD1D673BF835549332f555D1041B3a0c41f",
+      "txHash": "0xf622f1bcc2c7cd930d63de3753eda6eafca62e7e97a78c56d61ef3d7bbfa586a",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xbE6213091e7b4E233Ded9CA1c292F464Dc29C7Fb",
+      "txHash": "0xf813c5e7c7aa317f551a5acafa7fe0a6af5cb2543ae4ff61c4ad2d6ad730d4dd",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x647Fdccce80Aeb6517D6484E749F065E27827Eae",
+      "txHash": "0xce78a8533dd84ac65514b54fc1aadd55fcf09df7138f006df31860f9b500915d",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x41beD87f43Fc633d50c145b840A7425b06F9f256",
+      "txHash": "0x8462317ed68fbff28e296ccd1c04fb361f0c2151f90d0b062ca62acb771086ab",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xa29B0F59972da0667b51282c887209D0A1800f55",
+      "txHash": "0x51a35be34f09a7c09ea073a5d70b06af50ff9738b8a3605e82180923db459419",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xBfC2D0ECe89deE09b6887A0c151e97e323521f2F",
+      "txHash": "0x4e614ebf0d85be213d33ef565c01fcbc25f49448d7a35e2fa979b013397bce49",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "40c6aef48b6ed3e9daedabe70aeba99e89708076343df3808a30d9f31270edcc": {
+      "address": "0x10286CF18D1b1ff6D286aEB44ba0b6Bb96ebF882",
+      "txHash": "0x7ec406131eaa58055141157b923890f2e9f7d89437eb1936cde83c254c471470",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "controlAccount",
+            "type": "t_address",
+            "src": "../project:/contracts/RewardsMachine.sol:17"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "nextRewardsPayment",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:19"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "currentISSSupply",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:20"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "maxISSSupply",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:21"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "maxBonusPools",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:22"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "rewardsRound",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:24"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "lastRewardsRound",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "../project:/contracts/RewardsMachine.sol:25"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "governanceToken",
+            "type": "t_contract(GovernanceToken)3944",
+            "src": "../project:/contracts/RewardsMachine.sol:27"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "votingEscrow",
+            "type": "t_contract(VotingEscrow)11781",
+            "src": "../project:/contracts/RewardsMachine.sol:28"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "voteMachine",
+            "type": "t_contract(VoteMachine)9927",
+            "src": "../project:/contracts/RewardsMachine.sol:29"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "USDCaddress",
+            "type": "t_address",
+            "src": "../project:/contracts/RewardsMachine.sol:33"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "voteMachineAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/RewardsMachine.sol:35"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "assetFactoryAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/RewardsMachine.sol:36"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "marketFactoryAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/RewardsMachine.sol:37"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "vestingPeriod",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:38"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "LPRewardTokenNumber",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:39"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "votingRewardTokenNumber",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:40"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "ISSBonusPoolAdded",
+            "type": "t_bool",
+            "src": "../project:/contracts/RewardsMachine.sol:41"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "pools",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "../project:/contracts/RewardsMachine.sol:43"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "poolExists",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "src": "../project:/contracts/RewardsMachine.sol:44"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "numberOfPools",
+            "type": "t_uint256",
+            "src": "../project:/contracts/RewardsMachine.sol:45"
+          },
+          {
+            "contract": "RewardsMachine",
+            "label": "ISSPoolAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/RewardsMachine.sol:48"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_contract(GovernanceToken)3944": {
+            "label": "contract GovernanceToken"
+          },
+          "t_contract(VotingEscrow)11781": {
+            "label": "contract VotingEscrow"
+          },
+          "t_contract(VoteMachine)9927": {
+            "label": "contract VoteMachine"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)"
+          },
+          "t_string_storage": {
+            "label": "string"
+          }
+        }
+      }
+    },
+    "cb448658894543176ffb311e9d66ed9e7fa9533249637ae3822f58090b9dd147": {
+      "address": "0x59c1F86157ee82fcE42eF7D0AD3bCCec8caf0c30",
+      "txHash": "0x8e7ed7ddcd096239bb73d59383cd0b1be38548be4156ffc3093e632926b43288",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "feePool",
+            "type": "t_uint256",
+            "src": "../project:/contracts/assetFactory.sol:24"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "assetNumber",
+            "type": "t_uint256",
+            "src": "../project:/contracts/assetFactory.sol:25"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "USDCaddress",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:26"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "tokenFactoryAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:27"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "voteMachineAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:28"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "rewardsMachineAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:29"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "marketFactoryAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:30"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "marketRouterAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:31"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "ISSAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:32"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "assets",
+            "type": "t_array(t_string_storage)dyn_storage",
+            "src": "../project:/contracts/assetFactory.sol:33"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "controlAccount",
+            "type": "t_address",
+            "src": "../project:/contracts/assetFactory.sol:34"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "getAsset",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(Asset)13968_storage)",
+            "src": "../project:/contracts/assetFactory.sol:35"
+          },
+          {
+            "contract": "AssetFactory",
+            "label": "harvestCooldown",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "../project:/contracts/assetFactory.sol:36"
+          }
+        ],
+        "types": {
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_string_storage)dyn_storage": {
+            "label": "string[]"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(Asset)13968_storage)": {
+            "label": "mapping(string => struct issuaaLibrary.Asset)"
+          },
+          "t_struct(Asset)13968_storage": {
+            "label": "struct issuaaLibrary.Asset",
+            "members": [
+              {
+                "label": "Token1",
+                "type": "t_address"
+              },
+              {
+                "label": "Token2",
+                "type": "t_address"
+              },
+              {
+                "label": "name",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "description",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "upperLimit",
+                "type": "t_uint256"
+              },
+              {
+                "label": "endOfLifeValue",
+                "type": "t_uint256"
+              },
+              {
+                "label": "expiryTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "frozen",
+                "type": "t_bool"
+              },
+              {
+                "label": "expired",
+                "type": "t_bool"
+              },
+              {
+                "label": "exists",
+                "type": "t_bool"
+              }
+            ]
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          }
+        }
+      }
+    },
+    "d6fc6e501f1cee4d789cebc264dc0a23a3fce43f618810dc9d7bdb8a1f3671cd": {
+      "address": "0xAE8B125A2e623C10882dbB085Fd41D65a18f5ec5",
+      "txHash": "0xa6973ab46196a3a8afb6e4e15f4f32729a57929f2eb05545662a95fac802aef4",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "controlAccount",
+            "type": "t_address",
+            "src": "../project:/contracts/VoteMachine.sol:10"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "assetFactory",
+            "type": "t_contract(AssetFactory)13108",
+            "src": "../project:/contracts/VoteMachine.sol:11"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "votingEscrow",
+            "type": "t_contract(VotingEscrow)11781",
+            "src": "../project:/contracts/VoteMachine.sol:12"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "assetFactoryAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/VoteMachine.sol:13"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "rewardsMachineAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/VoteMachine.sol:14"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "DAOAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/VoteMachine.sol:15"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "UpdaterAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/VoteMachine.sol:16"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "DAOVolume",
+            "type": "t_uint256",
+            "src": "../project:/contracts/VoteMachine.sol:17"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "lastVoteID",
+            "type": "t_uint256",
+            "src": "../project:/contracts/VoteMachine.sol:18"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "lastFreezeVoteIDBySymbol",
+            "type": "t_mapping(t_string_memory_ptr,t_uint256)",
+            "src": "../project:/contracts/VoteMachine.sol:19"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "freezeVotesByID",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))",
+            "src": "../project:/contracts/VoteMachine.sol:20"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "allFreezeVotesByID",
+            "type": "t_mapping(t_uint256,t_struct(freezeVoteDetails)8123_storage)",
+            "src": "../project:/contracts/VoteMachine.sol:21"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "hasVoted",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))",
+            "src": "../project:/contracts/VoteMachine.sol:22"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "rewardPointsSnapshots",
+            "type": "t_mapping(t_uint256,t_struct(rewardPointsSnapshot)8207_storage)",
+            "src": "../project:/contracts/VoteMachine.sol:24"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "currentRewardsRound",
+            "type": "t_uint256",
+            "src": "../project:/contracts/VoteMachine.sol:25"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "getFreezeVotes",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(FreezeVotes)8167_storage)",
+            "src": "../project:/contracts/VoteMachine.sol:26"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "getEndOfLifeVotes",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(endOfLifeVotes)8197_storage)",
+            "src": "../project:/contracts/VoteMachine.sol:27"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "rewardPoints",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "../project:/contracts/VoteMachine.sol:28"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "freezeVotesToCheck",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_array(t_struct(individualFreezeVote)8116_storage)dyn_storage))",
+            "src": "../project:/contracts/VoteMachine.sol:30"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "freezeVoteResults",
+            "type": "t_mapping(t_uint256,t_bool)",
+            "src": "../project:/contracts/VoteMachine.sol:31"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "lastExpiryVoteIDBySymbol",
+            "type": "t_mapping(t_string_memory_ptr,t_uint256)",
+            "src": "../project:/contracts/VoteMachine.sol:33"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "expiryVotesByID",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))",
+            "src": "../project:/contracts/VoteMachine.sol:34"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "allExpiryVotesByID",
+            "type": "t_mapping(t_uint256,t_struct(expiryVoteDetails)8137_storage)",
+            "src": "../project:/contracts/VoteMachine.sol:35"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "expiryVotesToCheck",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_array(t_struct(individualExpiryVote)8130_storage)dyn_storage))",
+            "src": "../project:/contracts/VoteMachine.sol:36"
+          },
+          {
+            "contract": "VoteMachine",
+            "label": "expiryVoteResults",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "src": "../project:/contracts/VoteMachine.sol:37"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(AssetFactory)13108": {
+            "label": "contract AssetFactory"
+          },
+          "t_contract(VotingEscrow)11781": {
+            "label": "contract VotingEscrow"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_string_memory_ptr,t_uint256)": {
+            "label": "mapping(string => uint256)"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_bool))": {
+            "label": "mapping(uint256 => mapping(address => bool))"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_uint256,t_struct(freezeVoteDetails)8123_storage)": {
+            "label": "mapping(uint256 => struct VoteMachine.freezeVoteDetails)"
+          },
+          "t_struct(freezeVoteDetails)8123_storage": {
+            "label": "struct VoteMachine.freezeVoteDetails",
+            "members": [
+              {
+                "label": "voteResult",
+                "type": "t_bool"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_uint256,t_struct(rewardPointsSnapshot)8207_storage)": {
+            "label": "mapping(uint256 => struct VoteMachine.rewardPointsSnapshot)"
+          },
+          "t_struct(rewardPointsSnapshot)8207_storage": {
+            "label": "struct VoteMachine.rewardPointsSnapshot",
+            "members": [
+              {
+                "label": "votingRewardpoints",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "votingRewardAddresses",
+                "type": "t_array(t_address)dyn_storage"
+              },
+              {
+                "label": "totalVotingRewardPoints",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(FreezeVotes)8167_storage)": {
+            "label": "mapping(string => struct VoteMachine.FreezeVotes)"
+          },
+          "t_struct(FreezeVotes)8167_storage": {
+            "label": "struct VoteMachine.FreezeVotes",
+            "members": [
+              {
+                "label": "voteID",
+                "type": "t_uint256"
+              },
+              {
+                "label": "startingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "yesVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "noVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "exists",
+                "type": "t_bool"
+              },
+              {
+                "label": "hasvoted",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "voteNumber",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(endOfLifeVotes)8197_storage)": {
+            "label": "mapping(string => struct VoteMachine.endOfLifeVotes)"
+          },
+          "t_struct(endOfLifeVotes)8197_storage": {
+            "label": "struct VoteMachine.endOfLifeVotes",
+            "members": [
+              {
+                "label": "voteID",
+                "type": "t_uint256"
+              },
+              {
+                "label": "startingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "numberOfVotingShares",
+                "type": "t_uint256"
+              },
+              {
+                "label": "totalVoteValue",
+                "type": "t_uint256"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "exists",
+                "type": "t_bool"
+              },
+              {
+                "label": "hasvoted",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "voteNumber",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_array(t_struct(individualFreezeVote)8116_storage)dyn_storage))": {
+            "label": "mapping(uint256 => mapping(address => struct VoteMachine.individualFreezeVote[]))"
+          },
+          "t_mapping(t_address,t_array(t_struct(individualFreezeVote)8116_storage)dyn_storage)": {
+            "label": "mapping(address => struct VoteMachine.individualFreezeVote[])"
+          },
+          "t_array(t_struct(individualFreezeVote)8116_storage)dyn_storage": {
+            "label": "struct VoteMachine.individualFreezeVote[]"
+          },
+          "t_struct(individualFreezeVote)8116_storage": {
+            "label": "struct VoteMachine.individualFreezeVote",
+            "members": [
+              {
+                "label": "voteID",
+                "type": "t_uint256"
+              },
+              {
+                "label": "vote",
+                "type": "t_bool"
+              },
+              {
+                "label": "votingPoints",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_uint256,t_bool)": {
+            "label": "mapping(uint256 => bool)"
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(uint256 => mapping(address => uint256))"
+          },
+          "t_mapping(t_uint256,t_struct(expiryVoteDetails)8137_storage)": {
+            "label": "mapping(uint256 => struct VoteMachine.expiryVoteDetails)"
+          },
+          "t_struct(expiryVoteDetails)8137_storage": {
+            "label": "struct VoteMachine.expiryVoteDetails",
+            "members": [
+              {
+                "label": "voteResult",
+                "type": "t_uint256"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_array(t_struct(individualExpiryVote)8130_storage)dyn_storage))": {
+            "label": "mapping(uint256 => mapping(address => struct VoteMachine.individualExpiryVote[]))"
+          },
+          "t_mapping(t_address,t_array(t_struct(individualExpiryVote)8130_storage)dyn_storage)": {
+            "label": "mapping(address => struct VoteMachine.individualExpiryVote[])"
+          },
+          "t_array(t_struct(individualExpiryVote)8130_storage)dyn_storage": {
+            "label": "struct VoteMachine.individualExpiryVote[]"
+          },
+          "t_struct(individualExpiryVote)8130_storage": {
+            "label": "struct VoteMachine.individualExpiryVote",
+            "members": [
+              {
+                "label": "voteID",
+                "type": "t_uint256"
+              },
+              {
+                "label": "vote",
+                "type": "t_uint256"
+              },
+              {
+                "label": "votingPoints",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)"
+          }
+        }
+      }
+    },
+    "ef4ccb91083fd8f1d09812e46a10b0bca819c66947049935c5d55050a8acc58e": {
+      "address": "0x8a321a87fC3106576E7fA9c64edd258E9879B212",
+      "txHash": "0xccf9565a50569197023e1819e28bdaa7632a69568458a3da4c619b782f64e93e",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "DAO",
+            "label": "voteMachine",
+            "type": "t_contract(VoteMachine)9927",
+            "src": "../project:/contracts/DAO.sol:17"
+          },
+          {
+            "contract": "DAO",
+            "label": "votingEscrow",
+            "type": "t_contract(VotingEscrow)11781",
+            "src": "../project:/contracts/DAO.sol:18"
+          },
+          {
+            "contract": "DAO",
+            "label": "assetFactory",
+            "type": "t_contract(AssetFactory)13108",
+            "src": "../project:/contracts/DAO.sol:19"
+          },
+          {
+            "contract": "DAO",
+            "label": "governanceToken",
+            "type": "t_contract(GovernanceToken)3944",
+            "src": "../project:/contracts/DAO.sol:20"
+          },
+          {
+            "contract": "DAO",
+            "label": "numberOfGrantVotes",
+            "type": "t_uint256",
+            "src": "../project:/contracts/DAO.sol:21"
+          },
+          {
+            "contract": "DAO",
+            "label": "numberOfNewAssetVotes",
+            "type": "t_uint256",
+            "src": "../project:/contracts/DAO.sol:22"
+          },
+          {
+            "contract": "DAO",
+            "label": "grantVoteAddresses",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "../project:/contracts/DAO.sol:23"
+          },
+          {
+            "contract": "DAO",
+            "label": "newAssetVoteSymbols",
+            "type": "t_array(t_string_storage)dyn_storage",
+            "src": "../project:/contracts/DAO.sol:24"
+          },
+          {
+            "contract": "DAO",
+            "label": "DAOVolume",
+            "type": "t_uint256",
+            "src": "../project:/contracts/DAO.sol:25"
+          },
+          {
+            "contract": "DAO",
+            "label": "getGrantVotes",
+            "type": "t_mapping(t_address,t_struct(grantFundingVotes)2591_storage)",
+            "src": "../project:/contracts/DAO.sol:48"
+          },
+          {
+            "contract": "DAO",
+            "label": "hasVoted",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))",
+            "src": "../project:/contracts/DAO.sol:73"
+          },
+          {
+            "contract": "DAO",
+            "label": "getNewAssetVotes",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(newAssetVotes)2634_storage)",
+            "src": "../project:/contracts/DAO.sol:75"
+          },
+          {
+            "contract": "DAO",
+            "label": "lastVoteID",
+            "type": "t_uint256",
+            "src": "../project:/contracts/DAO.sol:78"
+          },
+          {
+            "contract": "DAO",
+            "label": "lastGrantVoteIDByReceiver",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "../project:/contracts/DAO.sol:79"
+          },
+          {
+            "contract": "DAO",
+            "label": "lastNewAssetVoteIDBySymbol",
+            "type": "t_mapping(t_string_memory_ptr,t_uint256)",
+            "src": "../project:/contracts/DAO.sol:80"
+          },
+          {
+            "contract": "DAO",
+            "label": "allGrantVotesByID",
+            "type": "t_mapping(t_uint256,t_struct(grantVoteDetails)2672_storage)",
+            "src": "../project:/contracts/DAO.sol:82"
+          },
+          {
+            "contract": "DAO",
+            "label": "allNewAssetVotesByID",
+            "type": "t_mapping(t_uint256,t_struct(newAssetVoteDetails)2679_storage)",
+            "src": "../project:/contracts/DAO.sol:83"
+          }
+        ],
+        "types": {
+          "t_contract(VoteMachine)9927": {
+            "label": "contract VoteMachine"
+          },
+          "t_contract(VotingEscrow)11781": {
+            "label": "contract VotingEscrow"
+          },
+          "t_contract(AssetFactory)13108": {
+            "label": "contract AssetFactory"
+          },
+          "t_contract(GovernanceToken)3944": {
+            "label": "contract GovernanceToken"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_string_storage)dyn_storage": {
+            "label": "string[]"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_address,t_struct(grantFundingVotes)2591_storage)": {
+            "label": "mapping(address => struct DAO.grantFundingVotes)"
+          },
+          "t_struct(grantFundingVotes)2591_storage": {
+            "label": "struct DAO.grantFundingVotes",
+            "members": [
+              {
+                "label": "voteID",
+                "type": "t_uint256"
+              },
+              {
+                "label": "startingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "yesVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "noVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "amount",
+                "type": "t_uint256"
+              },
+              {
+                "label": "description",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "exists",
+                "type": "t_bool"
+              },
+              {
+                "label": "hasvoted",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "voteNumber",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_bool))": {
+            "label": "mapping(uint256 => mapping(address => bool))"
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(newAssetVotes)2634_storage)": {
+            "label": "mapping(string => struct DAO.newAssetVotes)"
+          },
+          "t_struct(newAssetVotes)2634_storage": {
+            "label": "struct DAO.newAssetVotes",
+            "members": [
+              {
+                "label": "voteID",
+                "type": "t_uint256"
+              },
+              {
+                "label": "startingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "yesVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "noVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "symbol",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "name",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "description",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "upperLimit",
+                "type": "t_uint256"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "exists",
+                "type": "t_bool"
+              },
+              {
+                "label": "hasvoted",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "voteNumber",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_mapping(t_string_memory_ptr,t_uint256)": {
+            "label": "mapping(string => uint256)"
+          },
+          "t_mapping(t_uint256,t_struct(grantVoteDetails)2672_storage)": {
+            "label": "mapping(uint256 => struct DAO.grantVoteDetails)"
+          },
+          "t_struct(grantVoteDetails)2672_storage": {
+            "label": "struct DAO.grantVoteDetails",
+            "members": [
+              {
+                "label": "voteResult",
+                "type": "t_bool"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_uint256,t_struct(newAssetVoteDetails)2679_storage)": {
+            "label": "mapping(uint256 => struct DAO.newAssetVoteDetails)"
+          },
+          "t_struct(newAssetVoteDetails)2679_storage": {
+            "label": "struct DAO.newAssetVoteDetails",
+            "members": [
+              {
+                "label": "voteResult",
+                "type": "t_bool"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "a9d3d08b72538e5a53f5e1caca1db15e4b786095c165e51b37f3469576c5be36": {
+      "address": "0x5Cbac9aDf4434d9BAFADad7f9453bD3ca30Cc783",
+      "txHash": "0xef48ace842cdbdf4178805b7cfd3a05ffd2e04798965534155af5c9b1bb22f61",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "MarketFactory",
+            "label": "controlAccount",
+            "type": "t_address",
+            "src": "../project:/contracts/MarketFactory.sol:18"
+          },
+          {
+            "contract": "MarketFactory",
+            "label": "feeTo",
+            "type": "t_address",
+            "src": "../project:/contracts/MarketFactory.sol:19"
+          },
+          {
+            "contract": "MarketFactory",
+            "label": "feeToSetter",
+            "type": "t_address",
+            "src": "../project:/contracts/MarketFactory.sol:20"
+          },
+          {
+            "contract": "MarketFactory",
+            "label": "rewardsMachineAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/MarketFactory.sol:21"
+          },
+          {
+            "contract": "MarketFactory",
+            "label": "USDCAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/MarketFactory.sol:23"
+          },
+          {
+            "contract": "MarketFactory",
+            "label": "getPair",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_address))",
+            "src": "../project:/contracts/MarketFactory.sol:25"
+          },
+          {
+            "contract": "MarketFactory",
+            "label": "allPairs",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "../project:/contracts/MarketFactory.sol:26"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_address))": {
+            "label": "mapping(address => mapping(address => address))"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    },
+    "f1de6ae1993a4071c57e8e7215d343572892386fd3392ae24fa08cfe3913f477": {
+      "address": "0xCA6BCfadffCC4D5eCc4EC82B3b3B30A0fB9Bac92",
+      "txHash": "0x411d50c002e979e3e0b15f9a358aa41cb33ec06e8505322a5abc4ce2b6c61d2e",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "voteMachine",
+            "type": "t_contract(VoteMachine)9927",
+            "src": "../project:/contracts/Upgrader.sol:20"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "votingEscrow",
+            "type": "t_contract(VotingEscrow)11781",
+            "src": "../project:/contracts/Upgrader.sol:23"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "proxyAdminAddress",
+            "type": "t_address",
+            "src": "../project:/contracts/Upgrader.sol:24"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "numberOfUpgradeVotes",
+            "type": "t_uint256",
+            "src": "../project:/contracts/Upgrader.sol:25"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "upgradeVoteAddresses",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "../project:/contracts/Upgrader.sol:26"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "isValidContract",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "src": "../project:/contracts/Upgrader.sol:27"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "contractAddresses",
+            "type": "t_mapping(t_string_memory_ptr,t_address_payable)",
+            "src": "../project:/contracts/Upgrader.sol:28"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "getUpgradeVotes",
+            "type": "t_mapping(t_address,t_struct(upgradeVotes)7340_storage)",
+            "src": "../project:/contracts/Upgrader.sol:51"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "hasVoted",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))",
+            "src": "../project:/contracts/Upgrader.sol:53"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "lastVoteID",
+            "type": "t_uint256",
+            "src": "../project:/contracts/Upgrader.sol:57"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "lastUpgradeVoteIDByImplementationAddress",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "../project:/contracts/Upgrader.sol:58"
+          },
+          {
+            "contract": "Upgrader",
+            "label": "allUpgradeVotesByID",
+            "type": "t_mapping(t_uint256,t_struct(upgradeVoteDetails)7369_storage)",
+            "src": "../project:/contracts/Upgrader.sol:61"
+          }
+        ],
+        "types": {
+          "t_contract(VoteMachine)9927": {
+            "label": "contract VoteMachine"
+          },
+          "t_contract(VotingEscrow)11781": {
+            "label": "contract VotingEscrow"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_string_memory_ptr,t_address_payable)": {
+            "label": "mapping(string => address payable)"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_mapping(t_address,t_struct(upgradeVotes)7340_storage)": {
+            "label": "mapping(address => struct Upgrader.upgradeVotes)"
+          },
+          "t_struct(upgradeVotes)7340_storage": {
+            "label": "struct Upgrader.upgradeVotes",
+            "members": [
+              {
+                "label": "voteID",
+                "type": "t_uint256"
+              },
+              {
+                "label": "startingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "yesVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "noVotes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "contractToUpgrade",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "exists",
+                "type": "t_bool"
+              },
+              {
+                "label": "hasvoted",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "voteNumber",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_bool))": {
+            "label": "mapping(uint256 => mapping(address => bool))"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_mapping(t_uint256,t_struct(upgradeVoteDetails)7369_storage)": {
+            "label": "mapping(uint256 => struct Upgrader.upgradeVoteDetails)"
+          },
+          "t_struct(upgradeVoteDetails)7369_storage": {
+            "label": "struct Upgrader.upgradeVoteDetails",
+            "members": [
+              {
+                "label": "voteResult",
+                "type": "t_bool"
+              },
+              {
+                "label": "open",
+                "type": "t_bool"
+              },
+              {
+                "label": "endingTime",
+                "type": "t_uint256"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

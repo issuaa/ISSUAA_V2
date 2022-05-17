@@ -4,7 +4,6 @@ const GovernanceToken = artifacts.require("./GovernanceToken.sol");
 
 const VotingEscrow = artifacts.require("./VotingEscrow.sol")
 const AssetFactory = artifacts.require("./assetFactory.sol");
-const MockUSDC = artifacts.require("./MockUSDT.sol");
 const VoteMachine = artifacts.require("./VoteMachine.sol");
 const RewardsMachine = artifacts.require("./RewardsMachine.sol");
 const TokenFactory = artifacts.require("./TokenFactory.sol");
@@ -14,9 +13,10 @@ const MarketPair = artifacts.require("./MarketPair.sol");
 const DAO = artifacts.require("./DAO.sol");
 const AssetToken = artifacts.require("./AssetToken.sol");
 const Upgrader = artifacts.require("./Upgrader.sol");
+const ERC20 = artifacts.require("../openzeppelin/ERC20.sol");
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 const { admin } = require('@openzeppelin/truffle-upgrades');
-var USDCaddress = "0x055Ca4CCe0bf1D35e8D7953F5eCaDD0640Be8D46";
+var USDCaddress = "";
 const multisigAddress = "0x61bE0EC6Db427eD02a184A06963F44684547016E";
 
 var assetFactory;
@@ -34,14 +34,14 @@ year = year.toString()
 let zero = "0"
 if (month <10) {month = zero.concat(month.toString())} else {month = month.toString()}
 
-const dAOAmount = BigInt(10000000) * BigInt(1e18)
-const rewardsAmount = BigInt(20000000) * BigInt(1e18)
+const dAOAmount = BigInt(5000000) * BigInt(1e18)
+const rewardsAmount = BigInt(50000000) * BigInt(1e18)
 
 // JavaScript export
 
 module.exports = async function(deployer,network,accounts) {
     var ISSAddress;
-    if (network === "polygon") {ISSAddress = "0x3c2269811836af69497E5F486A85D7316753cf62"; USDCaddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"}
+    if (network === "polygon") {ISSAddress = "0x3c2269811836af69497E5F486A85D7316753cf62"; USDCaddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; multisigAddress = "matic:0x6ad7C3EEB0fEAF79763500ce5062bCB783D54fBA"}
     else if (network === "ethereum") {ISSAddress = "0x66A71Dcef29A0fFBDBE3c6a460a3B5BC225Cd675"; USDCaddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"}
     else if (network === "bsc") {ISSAddress = "0x3c2269811836af69497E5F486A85D7316753cf62"; USDCaddress = "0x672147dD47674757C457eB155BAA382cc10705Dd"}
     else if (network === "avalanche") {ISSAddress = "0x3c2269811836af69497E5F486A85D7316753cf62"; USDCaddress = "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664"}
@@ -49,13 +49,14 @@ module.exports = async function(deployer,network,accounts) {
     else if (network === "optimism") {ISSAddress = "0x3c2269811836af69497E5F486A85D7316753cf62"}
     else if (network === "fantom") {ISSAddress = "0xb6319cC6c8c27A8F5dAF0dD3DF91EA35C4720dd7"}
 
-    else if (network === "mumbai") {ISSAddress = "0x1AFB455e5431a41f97d37179672377BBa973Fd87"; USDCaddress = "0x85f825bD8BcC002fF8E201926B7b334e0E05a91C"}
-    else if (network === "rinkeby") {ISSAddress = "0x92B971d00EC3Dfcb7F5A8DFe24B7A5d2e6C87e35"}
-    else if (network === "bscTestnet") {ISSAddress = "0x4d44454CCDC152DF034b73C64707E937ACf21DcB"}
-    else if (network === "fuji") {ISSAddress = "0xB7A89f28b9A7bdb20c53aE3EC74F7a00fF5c3b3B"}
-    else if (network === "arbitrumRinkeby") {ISSAddress = "0x4d44454CCDC152DF034b73C64707E937ACf21DcB"}
-    else if (network === "kovan") {ISSAddress = "0x72aB53a133b27Fa428ca7Dc263080807AfEc91b5"}    
-    else if (network === "fantomTestnet") {ISSAddress = "0x976c8A03382034Ce52c189a4733Ed8c759EcA43C"}
+    else if (network === "mumbai") {ISSAddress = "0xAF28499cbBd64bE71B5D6386888b68e177861025"; USDCaddress = "0x85f825bD8BcC002fF8E201926B7b334e0E05a91C"}
+    else if (network === "bscTestnet") {ISSAddress = "0x6bf5ca5639133B622c71BA23abd73948CEf2675f"}
+    else if (network === "fuji") {ISSAddress = "0xd9d40DB84625663a8c214977a088bc624E88006F"}
+    else if (network === "rinkeby") {ISSAddress = "0xeFE5922a09E954b7d4c4ea89dc5Ffd08Afa77B8F"}
+    else if (network === "arbitrumRinkeby") {ISSAddress = "0x79e35AaaCc316D1A3403424aEEbE4cD9a5EBA6A2"}
+    else if (network === "fantomTestnet") {ISSAddress = "0x56e09a54bed3dEF906d29dC721b0AB3586E9E021"}
+
+    else if (network === "kovan") {ISSAddress = "0x72aB53a133b27Fa428ca7Dc263080807AfEc91b5"} 
     else if (network === "development") {ISSAddress = "0x356F26716Fe237aD540F53D926D557Ae352Ea73E"; USDCaddress = "0x055Ca4CCe0bf1D35e8D7953F5eCaDD0640Be8D46"}
     
     console.log("ISS Address: ",ISSAddress)
@@ -79,8 +80,8 @@ module.exports = async function(deployer,network,accounts) {
 
 
     var assets = []
-    assets.push(["Dow Jones Industrial Average Index", "DJIA", "US Equity Index (30 main US-Stocks). ISIN: US2605661048",60000000,34607000])
-    assets.push(["NASDAQ 100 Index", "NDX", "US Equity Index (100 largest non-fin. NASDAQ listed comp.). ISIN: US6311011026 ",30000000,15444000])
+    //assets.push(["Dow Jones Industrial Average Index", "DJIA", "US Equity Index (30 main US-Stocks). ISIN: US2605661048",60000000,34607000])
+    //assets.push(["NASDAQ 100 Index", "NDX", "US Equity Index (100 largest non-fin. NASDAQ listed comp.). ISIN: US6311011026 ",30000000,15444000])
     //assets.push(["Standard & Poors 500 Index", "S500", "US Equity Index (500 largest listed US Companies). ISIN: US78378X1072",10000000,4460000])
     //assets.push(["WTI crude oil", "WTI", "WTI crude oil Price (Spot) in USD. ISIN: XD0015948363",150000,70000])
     //assets.push(["Gold", "XAU", "Gold Price (Spot) in USD. ISIN: XC0009655157 ",4000000,1788000])
@@ -142,7 +143,7 @@ module.exports = async function(deployer,network,accounts) {
     await marketFactory.createPair(ISSAddress,USDCaddress);
     console.log("ISS USD market pair generated")
     let pair = await marketFactory.getPair(ISSAddress,USDCaddress);
-    await rewardsMachine.addIPTBonusPool(pair);
+    await rewardsMachine.addISSBonusPool(pair);
     console.log("ISS pool added")
 
     //transfer ownership to AssetFactory Address where no longer needed.
@@ -153,7 +154,7 @@ module.exports = async function(deployer,network,accounts) {
     
 
     
-    const USDC = await MockUSDC.at(USDCaddress);
+    const USDC = await ERC20.at(USDCaddress);
     
     await USDC.approve(AssetFactory.address,'1000000000000000000000000000000000000000')
     console.log("Approved AssetFactory to spend USDC")
@@ -220,8 +221,8 @@ module.exports = async function(deployer,network,accounts) {
     //Change ownership of the proxy contracts to the upgrader contract
     //await admin.transferProxyAdminOwnership(upgrader.address);
 
-    await governanceToken.mint(dAO.address,dAOAmount)
-    await governanceToken.mint(rewardsMachine.address,rewardsAmount)
+    await governanceToken.transfer(dAO.address,dAOAmount)
+    await governanceToken.transfer(rewardsMachine.address,rewardsAmount)
     console.log("DAO and RewardsMachine share of the GovernanceToken transferred")
 
     try{
@@ -235,10 +236,10 @@ module.exports = async function(deployer,network,accounts) {
     }
     
  
-    await governanceToken.approve(VotingEscrow.address,'10000000000000000000000000000')
-    await votingEscrow.createLock('100000000000000000000000',1744622600)
-
+    
     if (network === 'development'){
+        await governanceToken.approve(VotingEscrow.address,'10000000000000000000000000000')
+        await votingEscrow.createLock('100000000000000000000000',1744622600)
         await rewardsMachine.createRewards();
         let z =  await rewardsMachine.getRewards(myAddress)
         console.log("Rewards: ",z/1e18+'')

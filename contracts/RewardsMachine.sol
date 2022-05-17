@@ -17,8 +17,8 @@ contract RewardsMachine is Initializable{
     address public controlAccount;
     using SafeMath for uint256;
     uint256 public nextRewardsPayment;
-    uint256 public currentIPTSupply;
-    uint256 public maxIPTSupply;
+    uint256 public currentISSSupply;
+    uint256 public maxISSSupply;
     uint256  public maxBonusPools;
     
     uint256 public rewardsRound;
@@ -38,14 +38,14 @@ contract RewardsMachine is Initializable{
     uint256 public vestingPeriod;
     uint256 public LPRewardTokenNumber;
     uint256 public votingRewardTokenNumber;
-    bool public IPTBonusPoolAdded;
+    bool public ISSBonusPoolAdded;
 
     address[] public pools;
     mapping(string =>bool) public poolExists;
     uint256 public numberOfPools; 
 
 
-    address public IPTPoolAddress;
+    address public ISSPoolAddress;
 
     //uint public debug1;
     //uint public debug2;
@@ -62,10 +62,10 @@ contract RewardsMachine is Initializable{
         controlAccount = _controlAccount;
         governanceToken = _governanceToken;
         votingEscrow = _votingEscrow;
-        currentIPTSupply = 40000000 * (10 ** 18);
+        currentISSSupply = 40000000 * (10 ** 18);
         vestingPeriod = 180 days;
         nextRewardsPayment = 1633273200;
-        maxIPTSupply = 100000000 * (10 ** 18);
+        maxISSSupply = 100000000 * (10 ** 18);
         maxBonusPools = 250;
         USDCaddress = _USDCAddress;
         rewardsRound = 1;
@@ -81,13 +81,13 @@ contract RewardsMachine is Initializable{
         }
 
 
-    event currentIPTSupplyReduced(
+    event currentISSSupplyReduced(
         uint256 _amount
     );
     event rewardPoolAdded(
         string _symbol
     );
-    event IPTPoolAdded(
+    event ISSPoolAdded(
         address _poolAddress
     );
 
@@ -135,27 +135,27 @@ contract RewardsMachine is Initializable{
 
     
     /**
-    * @notice A method that reduced the variable currentIPTSupply.
-    *         currentIPTsupple keeps track of the amount of governace token, which is important
+    * @notice A method that reduced the variable currentISSSupply.
+    *         currentISSsupply keeps track of the amount of governace token, which is important
     *         to keep reducing the rewards to ot let the issued amount exceed the max value.
     *         this function is used when givernance tokens are burned.
-    * @param  _amount Amount by which the currentIPTsupply is reduced.
+    * @param  _amount Amount by which the currentISSSupply is reduced.
     */
-    function reduceCurrentIPTSupply(
+    function reduceCurrentISSSupply(
         uint256 _amount
         ) 
         external 
         {
         require (msg.sender == assetFactoryAddress,'Not authorized');
-        currentIPTSupply = currentIPTSupply.sub(_amount);
-        emit currentIPTSupplyReduced(_amount);
+        currentISSSupply = currentISSSupply.sub(_amount);
+        emit currentISSSupplyReduced(_amount);
     }
 
     /**
-    * @notice A method that burns IPT owned by the assetFactory contract.
-    * @param  _amount Amount ofIPT which is burned.
+    * @notice A method that burns ISS owned by the assetFactory contract.
+    * @param  _amount Amount of ISS which is burned.
     */
-    function burnAssetFactoryIPT(
+    function burnAssetFactoryISS(
         uint256 _amount
         ) 
         external 
@@ -173,7 +173,7 @@ contract RewardsMachine is Initializable{
         view 
         returns (uint256) 
         {
-        return (currentIPTSupply);
+        return (currentISSSupply);
     }
 
     /**
@@ -202,22 +202,22 @@ contract RewardsMachine is Initializable{
     }
 
     /**
-    * @notice A method that adds the IPT MarketPool.
+    * @notice A method that adds the ISS MarketPool.
     * @param  _poolAddress Address of the pool, for which the new pool is generated
     */
-    function addIPTBonusPool(
+    function addISSBonusPool(
         address _poolAddress
         ) 
         external
         
         {
-        require(IPTBonusPoolAdded == false,'POOL_EXISTS_ALREADY');
+        require(ISSBonusPoolAdded == false,'POOL_EXISTS_ALREADY');
         
         pools.push(_poolAddress);
         numberOfPools +=1;
-        IPTBonusPoolAdded = true;
-        IPTPoolAddress = _poolAddress;
-        emit IPTPoolAdded(_poolAddress);
+        ISSBonusPoolAdded = true;
+        ISSPoolAddress = _poolAddress;
+        emit ISSPoolAdded(_poolAddress);
     }
     
 
@@ -232,12 +232,10 @@ contract RewardsMachine is Initializable{
         uint256 veSupply = votingEscrow.totalSupply();
         uint256 weeklyRewards = governanceToken.balanceOf(address(this)) * 2 / 100;
         
-        votingRewardTokenNumber = weeklyRewards * veSupply / (maxIPTSupply - governanceToken.balanceOf(address(this)));
+        votingRewardTokenNumber = weeklyRewards * veSupply / (maxISSSupply - governanceToken.balanceOf(address(this)));
         LPRewardTokenNumber = weeklyRewards - votingRewardTokenNumber;
 
-        //votingRewardTokenNumber = maxIPTSupply.sub(currentIPTSupply).mul(veSupply).mul(2).div(100).div(maxIPTSupply);
-        //LPRewardTokenNumber = maxIPTSupply.sub(currentIPTSupply).mul(2).div(100) - votingRewardTokenNumber;
-
+        
         //SNAPSHOT FOR THE LP TOKEN HOLDERS
         for (uint256 s = 0; s < numberOfPools; s += 1){
             address poolAddress = pools[s];
@@ -292,7 +290,7 @@ contract RewardsMachine is Initializable{
                 uint256 LPTokenTotalSupply = IMarketPair(poolAddress).totalSupplyAt(snapshotID);
 
                 if (LPTokenTotalSupply >0){
-                    if (poolAddress == IPTPoolAddress){
+                    if (poolAddress == ISSPoolAddress){
                         rawRewards = LPRewardTokenNumber.mul(4*5).mul(LPTokenBalance).div(LPTokenTotalSupply).div(numberOfPools+4).div(10);
                     }
                     else{
@@ -322,7 +320,7 @@ contract RewardsMachine is Initializable{
             VoteMachine(voteMachineAddress).addRewardPointsDAO(msg.sender,veISS);
             VoteMachine(voteMachineAddress).addTotalRewardPointsDAO(veISS);
 
-            currentIPTSupply = currentIPTSupply + totalRewards;
+            currentISSSupply = currentISSSupply + totalRewards;
             
             governanceToken.transfer(msg.sender, totalRewards);
             return (totalRewards);
@@ -368,7 +366,7 @@ contract RewardsMachine is Initializable{
                 uint256 LPTokenTotalSupply = IMarketPair(poolAddress).totalSupplyAt(snapshotID);
 
                 if (LPTokenTotalSupply >0){
-                    if (poolAddress == IPTPoolAddress){
+                    if (poolAddress == ISSPoolAddress){
                         rawRewards = LPRewardTokenNumber.mul(4*5).mul(LPTokenBalance).div(LPTokenTotalSupply).div(numberOfPools+4).div(10);
                     }
                     else{

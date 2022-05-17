@@ -29,7 +29,7 @@ contract AssetFactory is Initializable {
     address public rewardsMachineAddress;
     address public marketFactoryAddress;
     address public marketRouterAddress;
-    address public IPTAddress;
+    address public ISSAddress;
     string[] public assets;
     address public controlAccount;
     mapping(string => issuaaLibrary.Asset) public getAsset;
@@ -43,7 +43,7 @@ contract AssetFactory is Initializable {
 		) 
 		public initializer 
 		{
-        IPTAddress = _governanceTokenAddress;
+        ISSAddress = _governanceTokenAddress;
 		tokenFactoryAddress = _tokenFactoryAddress;
 		controlAccount = _controlAccount;
 		USDCaddress = _USDCAddress;
@@ -90,10 +90,7 @@ contract AssetFactory is Initializable {
 		uint256 _upperLimit
 	);
 
-	event BurnIPT (
-		uint256 _amount, 
-		address _address
-	);
+	
 
 	/**
 	* @notice A method to safely transfer ERV20 tokens.
@@ -390,26 +387,6 @@ contract AssetFactory is Initializable {
         emit BurnExpired (_symbol, _amount1, _amount2);
 	}
 
-	/**
-	* @notice A method that burns governance tokens to get USD stable coins in return.
-	* @param _amount Amount of tokens to be burned
-	function burnGovernanceToken (
-		uint256 _amount
-		) 
-		external 
-		{
-		
-		uint256 USDCAmount = (feePool.mul(_amount)).div(RewardsMachine(rewardsMachineAddress).maxIPTSupply());
-		feePool = feePool.sub(USDCAmount);
-		_transferFrom(IPTAddress,msg.sender, address(this), _amount);
-		RewardsMachine(rewardsMachineAddress).burnAssetFactoryIPT(_amount);
-		RewardsMachine(rewardsMachineAddress).reduceCurrentIPTSupply(_amount);
-		IERC20(USDCaddress).transfer(msg.sender,USDCAmount);
-		emit BurnIPT (_amount, msg.sender);
-	}
-	*/
-
-
     /**
 	* @notice A method that freezes a specific asset. Can only be called by the votemachine contract.
 	* @param _symbol Symbol of the asset to freeze.
@@ -485,19 +462,19 @@ contract AssetFactory is Initializable {
     	//Sell fees for ISS and send the ISS to treasury
     	address[] memory ISSpath = new address[](2);
     	ISSpath[0] = USDCaddress;
-    	ISSpath[1] = IPTAddress;
-    	address ISSPairAddress = MarketFactory(marketFactoryAddress).getPair(IPTAddress,USDCaddress);
+    	ISSpath[1] = ISSAddress;
+    	address ISSPairAddress = MarketFactory(marketFactoryAddress).getPair(ISSAddress,USDCaddress);
     	(_reserve0, _reserve1) = IMarketPair(ISSPairAddress).getReserves();
     	
     	uint256 ISSReserves;
-    	(ISSReserves, USDCReserves) = IPTAddress < USDCaddress ? (_reserve0,_reserve1) : (_reserve1,_reserve0);
+    	(ISSReserves, USDCReserves) = ISSAddress < USDCaddress ? (_reserve0,_reserve1) : (_reserve1,_reserve0);
     	uint256 USDCAmt = feePool;
     	if (USDCAmt > ISSReserves * 6 / 1000) {USDCAmt = ISSReserves * 6 / 1000;}
     	feePool -= USDCAmt;
     	IERC20(USDCaddress).approve(marketRouterAddress,USDCAmt);
     	amounts = IMarketRouter01(marketRouterAddress).swapExactTokensForTokens(USDCAmt,0,ISSpath,address(this),block.timestamp.add(1 hours));
-    	uint256 contractISSBalance = IERC20(IPTAddress).balanceOf(address(this));
-    	RewardsMachine(rewardsMachineAddress).burnAssetFactoryIPT(contractISSBalance);
+    	uint256 contractISSBalance = IERC20(ISSAddress).balanceOf(address(this));
+    	RewardsMachine(rewardsMachineAddress).burnAssetFactoryISS(contractISSBalance);
     	
     	
     }
