@@ -68,7 +68,6 @@ contract Upgrader is Initializable{
 	
 
 	function initializeContract(
-		GovernanceToken _governanceToken, 
 		VoteMachine _voteMachine,
 		VotingEscrow _votingEscrow,
 		address _proxyAdminAddress,	

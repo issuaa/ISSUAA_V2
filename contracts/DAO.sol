@@ -412,7 +412,7 @@ contract DAO is Initializable{
 		external 
 		{
 		require(getNewAssetVotes[_symbol].exists,'VOTEID_UNKNOWN'); //checks if the vote id exists)
-		require(getNewAssetVotes[_symbol].open,'VOTE_NOT_OPEN'); //checks is the vote is open)
+		require(getNewAssetVotes[_symbol].open,'VOTE_NOT_OPEN'); //checks if the vote is open)
 		require(getNewAssetVotes[_symbol].endingTime < block.timestamp);
 		getNewAssetVotes[_symbol].open = false;
 		

@@ -10,6 +10,7 @@ const TokenFactory = artifacts.require("./TokenFactory.sol");
 const MarketFactory = artifacts.require("./MarketFactory.sol");
 const MarketRouter = artifacts.require("./MarketRouter.sol");
 const MarketPair = artifacts.require("./MarketPair.sol");
+const MasterChef = artifacts.require("./MasterChef.sol");
 const DAO = artifacts.require("./DAO.sol");
 const AssetToken = artifacts.require("./AssetToken.sol");
 const Upgrader = artifacts.require("./Upgrader.sol");
@@ -88,7 +89,7 @@ module.exports = async function(deployer,network,accounts) {
 
     
     try{
-        // Deploy the VoteMachine
+        // Deploy the RewardsMachine
         let instance = await deployProxy(RewardsMachine, [myAddress, ISSAddress, VotingEscrow.address, USDCaddress], { deployer, initializer: 'initializeContract' });
         console.log('Deployed', instance.address);
         rewardsMachine = await RewardsMachine.deployed()
@@ -120,15 +121,27 @@ module.exports = async function(deployer,network,accounts) {
 
     try{
         // Deploy the DAO
-        let instance1 = await deployProxy(DAO, [VotingEscrow.address, VoteMachine.address, AssetFactory.address,ISSAddress,10000000,1], { deployer, initializer: 'initializeContract' });
-        console.log('Deployed', instance1.address);
-         dAO= await DAO.deployed()
+        await deployer.deploy(MasterChef,ISSAddress, RewardsMachine.address, VotingEscrow.address, myAddress,0,0)
+        masterChef= await MasterChef.deployed()
+        console.log('Deployed', masterChef.address);
     }
     catch (err) {
         console.log('Deploy step 7 failed', err);
         throw new Error('Deploy step 7 failed');
     }
 
+    await rewardsMachine.setMasterChefAddress(MasterChef.address);
+
+    try{
+        // Deploy the MasterChef
+        let instance1 = await deployProxy(DAO, [VotingEscrow.address, VoteMachine.address, AssetFactory.address,ISSAddress,10000000,1], { deployer, initializer: 'initializeContract' });
+        console.log('Deployed', instance1.address);
+         dAO= await DAO.deployed()
+    }
+    catch (err) {
+        console.log('Deploy step 8 failed', err);
+        throw new Error('Deploy step 8 failed');
+    }
       
 
     
@@ -173,7 +186,7 @@ module.exports = async function(deployer,network,accounts) {
 
     try{
         // Deploy the Upgrader Contract
-        let instance = await deployProxy(Upgrader, [ISSAddress,voteMachine.address, votingEscrow.address, proxyAdmin.address, assetFactory.address,voteMachine.address,dAO.address, rewardsMachine.address,marketFactory.address,votingEscrow.address], { deployer, initializer: 'initializeContract' });
+        let instance = await deployProxy(Upgrader, [voteMachine.address, votingEscrow.address, proxyAdmin.address, assetFactory.address,voteMachine.address,dAO.address, rewardsMachine.address,marketFactory.address,votingEscrow.address], { deployer, initializer: 'initializeContract' });
         console.log('Deployed', instance.address);
         upgrader = await Upgrader.deployed()
     }

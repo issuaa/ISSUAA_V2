@@ -11,13 +11,14 @@ import "./VoteMachine.sol";
 //import "./issuaaLibrary.sol";
 import "./interfaces/IMarketPair.sol";
 import "./assetFactory.sol";
+import "./MasterChef.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract RewardsMachine is Initializable{
     address public controlAccount;
     using SafeMath for uint256;
     uint256 public nextRewardsPayment;
-    uint256 public currentISSSupply;
     uint256 public maxISSSupply;
     uint256  public maxBonusPools;
     
@@ -35,21 +36,18 @@ contract RewardsMachine is Initializable{
     address public voteMachineAddress;
     address public assetFactoryAddress;
     address public marketFactoryAddress;
+    address public masterChefAddress;
     uint256 public vestingPeriod;
     uint256 public LPRewardTokenNumber;
     uint256 public votingRewardTokenNumber;
     bool public ISSBonusPoolAdded;
-
-    address[] public pools;
     mapping(string =>bool) public poolExists;
     uint256 public numberOfPools; 
 
 
     address public ISSPoolAddress;
 
-    //uint public debug1;
-    //uint public debug2;
-    //address public debug3;
+
 
     function initializeContract(
         address _controlAccount,
@@ -62,7 +60,6 @@ contract RewardsMachine is Initializable{
         controlAccount = _controlAccount;
         governanceToken = _governanceToken;
         votingEscrow = _votingEscrow;
-        currentISSSupply = 40000000 * (10 ** 18);
         vestingPeriod = 180 days;
         nextRewardsPayment = 1633273200;
         maxISSSupply = 100000000 * (10 ** 18);
@@ -81,9 +78,7 @@ contract RewardsMachine is Initializable{
         }
 
 
-    event currentISSSupplyReduced(
-        uint256 _amount
-    );
+    
     event rewardPoolAdded(
         string _symbol
     );
@@ -133,23 +128,20 @@ contract RewardsMachine is Initializable{
         assetFactoryAddress = _address;
     }
 
-    
     /**
-    * @notice A method that reduced the variable currentISSSupply.
-    *         currentISSsupply keeps track of the amount of governace token, which is important
-    *         to keep reducing the rewards to ot let the issued amount exceed the max value.
-    *         this function is used when givernance tokens are burned.
-    * @param  _amount Amount by which the currentISSSupply is reduced.
+    * @notice A method that set the address of the MasterChef contract.
+    * @param  _address Address of the MasterChef contract
     */
-    function reduceCurrentISSSupply(
-        uint256 _amount
-        ) 
-        external 
+    function setMasterChefAddress (
+        address _address
+        )
+        public
         {
-        require (msg.sender == assetFactoryAddress,'Not authorized');
-        currentISSSupply = currentISSSupply.sub(_amount);
-        emit currentISSSupplyReduced(_amount);
+        require (msg.sender == controlAccount,"NOT_CONTROL_ACCOUNT");
+        masterChefAddress = _address;
     }
+    
+    
 
     /**
     * @notice A method that burns ISS owned by the assetFactory contract.
@@ -165,6 +157,36 @@ contract RewardsMachine is Initializable{
         
     }
 
+    // Safe ISS transfer function, just in case if rounding error causes pool to not have enough ISS tokens.
+    function safeISSTransfer(
+        address _to, 
+        uint256 _amount
+        ) 
+    internal{
+        uint256 iSSBal = governanceToken.balanceOf(address(this));
+        if (_amount > iSSBal) {
+            governanceToken.transfer(_to, iSSBal);
+        } else {
+            governanceToken.transfer(_to, _amount);
+        }
+    }
+
+    /**
+    * @notice A method that transfers ISS tokens on behalf of the MasterChef contract.
+    * @param  _amount Amount of ISS which is transferred.
+    * @param  _to Address to which the ISS tokens are transferred
+    */
+    function transferISSforMasterChef(
+        address _to,
+        uint256 _amount
+        ) 
+    external 
+        {
+        require (msg.sender == masterChefAddress,'Not authorized');
+        safeISSTransfer(_to, _amount);
+        
+    }
+
     /**
     * @notice A method that lets an external contract fetch the current supply of the governance token.
     */
@@ -173,12 +195,14 @@ contract RewardsMachine is Initializable{
         view 
         returns (uint256) 
         {
+        uint256 totalPendingRewards = MasterChef(masterChefAddress).getPendingRewards();
+        uint256 currentISSSupply = governanceToken.balanceOf(address(this)) - totalPendingRewards;
         return (currentISSSupply);
     }
 
     /**
     * @notice A method that adds a market pair to the list of pools, which will get rewarded.
-    * @param  _symbol Address of the asset, for which the new pool is generated
+    * @param  _symbol Symbol of the asset, for which the new pool is generated
     */
     function addPools(
         string calldata _symbol
@@ -186,7 +210,7 @@ contract RewardsMachine is Initializable{
         external
         //onlyOwner
         {
-        require (pools.length+2 <= maxBonusPools,'TOO_MANY_POOLS');
+        require (numberOfPools <= maxBonusPools,'TOO_MANY_POOLS');
         require(poolExists[_symbol] == false,'POOL_EXISTS_ALREADY');
         require(AssetFactory(assetFactoryAddress).assetExists(_symbol),'UNKNOWN_SYMBOL');
         (address token1,address token2) = AssetFactory(assetFactoryAddress).getTokenAddresses(_symbol);
@@ -195,8 +219,11 @@ contract RewardsMachine is Initializable{
         require (pair1 != address(0),"PAIR1_DOES_NOT_EXIST");
         require (pair2 != address(0),"PAIR2_DOES_NOT_EXIST");
         poolExists[_symbol] = true;
-        pools.push(pair1);
-        pools.push(pair2);
+
+        MasterChef(masterChefAddress).add(1,IERC20(pair1));
+        MasterChef(masterChefAddress).add(1,IERC20(pair2));
+        //pools.push(pair1);
+        //pools.push(pair2);
         numberOfPools +=2;
         emit rewardPoolAdded(_symbol);
     }
@@ -213,10 +240,11 @@ contract RewardsMachine is Initializable{
         {
         require(ISSBonusPoolAdded == false,'POOL_EXISTS_ALREADY');
         
-        pools.push(_poolAddress);
+        //pools.push(_poolAddress);
         numberOfPools +=1;
         ISSBonusPoolAdded = true;
         ISSPoolAddress = _poolAddress;
+        MasterChef(masterChefAddress).add(5,IERC20(_poolAddress));
         emit ISSPoolAdded(_poolAddress);
     }
     
@@ -230,17 +258,14 @@ contract RewardsMachine is Initializable{
         {
         require(nextRewardsPayment<block.timestamp,'TIME_NOT_UP');
         uint256 veSupply = votingEscrow.totalSupply();
-        uint256 weeklyRewards = governanceToken.balanceOf(address(this)) * 2 / 100;
+        uint256 totalPendingRewards = MasterChef(masterChefAddress).getPendingRewards();
+        uint256 weeklyRewards = (governanceToken.balanceOf(address(this)) - totalPendingRewards) * 3 / 100;
         
-        votingRewardTokenNumber = weeklyRewards * veSupply / (maxISSSupply - governanceToken.balanceOf(address(this)));
-        LPRewardTokenNumber = weeklyRewards - votingRewardTokenNumber;
+        votingRewardTokenNumber = weeklyRewards * veSupply / (maxISSSupply - governanceToken.balanceOf(address(this)) + totalPendingRewards);
+        uint256 LPRewardTokenNumberPerSecond = (weeklyRewards - votingRewardTokenNumber) / 604800; // 1 week = 604800 seconds;
+        MasterChef(masterChefAddress).updateEmissionRate(LPRewardTokenNumberPerSecond);
 
-        
-        //SNAPSHOT FOR THE LP TOKEN HOLDERS
-        for (uint256 s = 0; s < numberOfPools; s += 1){
-            address poolAddress = pools[s];
-            IMarketPair(poolAddress).createSnapShot();
-        }
+
 
         nextRewardsPayment = block.timestamp.add(7 days);
         VoteMachine(voteMachineAddress).resetRewardPoints();
@@ -273,57 +298,16 @@ contract RewardsMachine is Initializable{
             else {
                 votingRewards = 0;
             }
-            
-            //LP Rewards
-            uint256 LPRewards;
-            uint256 veSupply = votingEscrow.totalSupply();
-            uint256 veISS = votingEscrow.balanceOf(msg.sender);
-
-            
-            for (uint256 s = 0; s < numberOfPools; s += 1){
-                address poolAddress = pools[s];
-                uint256 rewards;
-                uint256 rawRewards;
-                uint256 snapshotID = IMarketPair(poolAddress).snapshotID();
-                
-                uint256 LPTokenBalance = IMarketPair(poolAddress).balanceOfAt(msg.sender, snapshotID);
-                uint256 LPTokenTotalSupply = IMarketPair(poolAddress).totalSupplyAt(snapshotID);
-
-                if (LPTokenTotalSupply >0){
-                    if (poolAddress == ISSPoolAddress){
-                        rawRewards = LPRewardTokenNumber.mul(4*5).mul(LPTokenBalance).div(LPTokenTotalSupply).div(numberOfPools+4).div(10);
-                    }
-                    else{
-                        rawRewards = LPRewardTokenNumber.mul(4).mul(LPTokenBalance).div(LPTokenTotalSupply).div(numberOfPools+4).div(10);
-                    }    
-                    uint256 boostFactor = 1000;
-                    if (veSupply >0) {
-                        boostFactor = 1000 + (1500 * LPTokenTotalSupply * veISS) / (LPTokenBalance * veSupply);
-                        if (boostFactor >2500) {boostFactor = 2500;}
-                        }
-                    
-                    
-                    rewards = rawRewards * boostFactor / 1000;
-                }
-                else{
-                    rewards = 0;    
-                }
-                
-                LPRewards = LPRewards + rewards;
-            }
-            
-            
-
-            uint256 totalRewards = votingRewards + LPRewards;
 
             //Add rewardspoints for the next voting round
+            uint256 veISS = votingEscrow.balanceOf(msg.sender);
             VoteMachine(voteMachineAddress).addRewardPointsDAO(msg.sender,veISS);
             VoteMachine(voteMachineAddress).addTotalRewardPointsDAO(veISS);
 
-            currentISSSupply = currentISSSupply + totalRewards;
-            
-            governanceToken.transfer(msg.sender, totalRewards);
-            return (totalRewards);
+
+
+            governanceToken.transfer(msg.sender, votingRewards);
+            return (votingRewards);
 
         }
 
@@ -337,6 +321,8 @@ contract RewardsMachine is Initializable{
         returns (uint256)
         {
             if (lastRewardsRound[_address]>=rewardsRound-1){return 0;}
+            if (VoteMachine(voteMachineAddress).checkFreezeVotes(rewardsRound - 1,_address) == false) {return 0;}
+            if (VoteMachine(voteMachineAddress).checkExpiryVotes(rewardsRound - 1,_address) == false) {return 0;}
 
             //Voting rewards
             uint256 votingRewardPoints = VoteMachine(voteMachineAddress).adjustedRewardPointsOf(_address);
@@ -349,49 +335,7 @@ contract RewardsMachine is Initializable{
                 votingRewards = 0;
             }
             
-            
-            
-            //LP Rewards
-            uint256 LPRewards;
-            uint256 veSupply = votingEscrow.totalSupply();
-            uint256 veISS = votingEscrow.balanceOf(_address);
-
-            for (uint256 s = 0; s < numberOfPools; s += 1){
-                address poolAddress = pools[s];
-                uint256 rewards;
-                uint256 rawRewards;
-                uint256 snapshotID = IMarketPair(poolAddress).snapshotID();
-                
-                uint256 LPTokenBalance = IMarketPair(poolAddress).balanceOfAt(_address, snapshotID);
-                uint256 LPTokenTotalSupply = IMarketPair(poolAddress).totalSupplyAt(snapshotID);
-
-                if (LPTokenTotalSupply >0){
-                    if (poolAddress == ISSPoolAddress){
-                        rawRewards = LPRewardTokenNumber.mul(4*5).mul(LPTokenBalance).div(LPTokenTotalSupply).div(numberOfPools+4).div(10);
-                    }
-                    else{
-                        rawRewards = LPRewardTokenNumber.mul(4).mul(LPTokenBalance).div(LPTokenTotalSupply).div(numberOfPools+4).div(10);
-                    }    
-                    uint256 boostFactor = 1000;
-                    if (veSupply >0) {
-                        boostFactor = 1000 + (1500 * LPTokenTotalSupply * veISS) / (LPTokenBalance * veSupply);
-                        if (boostFactor >2500) {boostFactor = 2500;}
-                        }
-                    
-                    
-                    rewards = rawRewards * boostFactor / 1000;
-                }
-                else{
-                    rewards = 0;    
-                }
-                
-                LPRewards = LPRewards + rewards;
-            }
-            
-            
-
-            uint256 totalRewards = votingRewards + LPRewards;
-            return (totalRewards);
+            return (votingRewards);
 
         }
 }

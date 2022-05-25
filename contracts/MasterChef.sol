@@ -3,15 +3,17 @@
 pragma solidity 0.8.12;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+//import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 import "./GovernanceToken.sol";
+import "./RewardsMachine.sol";
+import "./VotingEscrow.sol";
 import "./libraries/BoringERC20.sol";
 
 
@@ -25,11 +27,11 @@ import "./libraries/BoringERC20.sol";
 // will be transferred to a governance smart contract once ISS is sufficiently
 // distributed and the community can show to govern itself.
 //
-// With thanks to the Lydia Finance team.
+// With thanks to the TraderJoe team.
 //
 // Godspeed and may the 10x be with you.
 
-contract MasterChefISSV2 is Ownable {
+contract MasterChef {
     using SafeMath for uint256;
     using BoringERC20 for IERC20;
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -62,6 +64,12 @@ contract MasterChefISSV2 is Ownable {
 
     // The ISS TOKEN!
     GovernanceToken public ISS;
+
+    // The rewardsMachine contract
+    RewardsMachine public rewardsMachine;
+
+    // The VotingEscrow contract
+    VotingEscrow public votingEscrow;
     
     // ISS tokens rewarded per second.
     uint256 public iSSPerSec;
@@ -77,6 +85,16 @@ contract MasterChefISSV2 is Ownable {
     uint256 public totalAllocPoint;
     // The timestamp when ISS mining starts.
     uint256 public startTimestamp;
+    // The control account
+    address public controlAccount;
+    // Total amount of claimed rewards
+    uint256 public totalClaimedPendingRewards;
+    // Time of last emission change
+    uint256 public timeOfLastEmissionChange;
+    // Accumulated Emissions at the time of the last emission change
+    uint256 public AccumulatedEmissionsAtLastEmissionChange;
+
+    
 
     event Add(uint256 indexed pid, uint256 allocPoint, IERC20 indexed lpToken);
     event Set(uint256 indexed pid, uint256 allocPoint);
@@ -87,13 +105,20 @@ contract MasterChefISSV2 is Ownable {
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event UpdateEmissionRate(address indexed user, uint256 _iSSPerSec);
 
+    
     constructor(
         GovernanceToken _iSS,
+        RewardsMachine _rewardsMachine,
+        VotingEscrow _votingEscrow,
+        address _controlAccount,
         uint256 _iSSPerSec,
         uint256 _startTimestamp
-    )  {
-        
+        ) 
+        {
         ISS = _iSS;
+        rewardsMachine = _rewardsMachine;
+        controlAccount = _controlAccount;
+        votingEscrow = _votingEscrow;
         iSSPerSec = _iSSPerSec;
         startTimestamp = _startTimestamp;
         totalAllocPoint = 0;
@@ -108,7 +133,9 @@ contract MasterChefISSV2 is Ownable {
     function add(
         uint256 _allocPoint,
         IERC20 _lpToken
-    ) public onlyOwner {
+    ) public  {
+        require (msg.sender == address(rewardsMachine),"NOT_REWARDS_MACHINE");
+        massUpdatePools();
         require(Address.isContract(address(_lpToken)), "add: LP token must be a valid contract");
         
         require(!lpTokens.contains(address(_lpToken)), "add: LP already added");
@@ -127,16 +154,39 @@ contract MasterChefISSV2 is Ownable {
         emit Add(poolInfo.length.sub(1), _allocPoint, _lpToken);
     }
 
+
+
     // Update the given pool's ISS allocation point. Can only be called by the owner.
     function set(
         uint256 _pid,
         uint256 _allocPoint
-    ) public onlyOwner {
+    ) public  {
+        require (msg.sender == address(rewardsMachine),"NOT_REWARDS_MACHINE");
         massUpdatePools();
         totalAllocPoint = totalAllocPoint.sub(poolInfo[_pid].allocPoint).add(_allocPoint);
         poolInfo[_pid].allocPoint = _allocPoint;
         emit Set(_pid, _allocPoint);
     }
+
+    // A fucntion to get the boost factor for an address and a pool idea
+    function getBoost(address _address, uint256 _pid) 
+        public
+        view 
+        returns (
+            uint256 boostFactor
+        )
+    {
+        PoolInfo storage pool = poolInfo[_pid]; //get pool data
+        UserInfo storage user = userInfo[_pid][msg.sender]; //get the user data for this pool
+        uint256 veISSBalance = votingEscrow.balanceOf(_address);
+        uint256 totalVeISS = votingEscrow.totalSupply();
+        uint256 lpSupply = pool.lpToken.balanceOf(address(this));
+        boostFactor = 1e12 + (user.amount * 1e12 *  totalVeISS / veISSBalance / lpSupply);
+        if (boostFactor > 25 * 1e11) {
+            boostFactor = 25 * 1e11;
+        }
+    }
+
 
     // View function to see pending ISSs on frontend.
     function pendingTokens(uint256 _pid, address _user)
@@ -160,7 +210,7 @@ contract MasterChefISSV2 is Ownable {
         
     }
 
-
+    
 
     // Update reward variables for all pools. Be careful of gas spending!
     function massUpdatePools() public {
@@ -196,12 +246,14 @@ contract MasterChefISSV2 is Ownable {
         if (user.amount > 0) {
             // Harvest ISS
             uint256 pending = user.amount.mul(pool.accISSPerShare).div(1e12).sub(user.rewardDebt);
-            safeISSTransfer(msg.sender, pending);
-            emit Harvest(msg.sender, _pid, pending);
+            uint256 payout = pending * user.boostFactor * 4 /1e13;
+            rewardsMachine.transferISSforMasterChef(msg.sender, payout);
+            totalClaimedPendingRewards += pending;
+            emit Harvest(msg.sender, _pid, payout);
         }
         user.amount = user.amount.add(_amount);
         user.rewardDebt = user.amount.mul(pool.accISSPerShare).div(1e12);
-
+        user.boostFactor = getBoost(msg.sender,_pid);
         pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
         emit Deposit(msg.sender, _pid, _amount);
     }
@@ -216,12 +268,14 @@ contract MasterChefISSV2 is Ownable {
 
         // Harvest ISS
         uint256 pending = user.amount.mul(pool.accISSPerShare).div(1e12).sub(user.rewardDebt);
-        safeISSTransfer(msg.sender, pending);
-        emit Harvest(msg.sender, _pid, pending);
+        uint256 payout = pending * user.boostFactor * 4 /1e13;
+        rewardsMachine.transferISSforMasterChef(msg.sender, payout);
+        totalClaimedPendingRewards += pending;
+        emit Harvest(msg.sender, _pid, payout);
 
         user.amount = user.amount.sub(_amount);
         user.rewardDebt = user.amount.mul(pool.accISSPerShare).div(1e12);
-
+        user.boostFactor = getBoost(msg.sender,_pid);
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
         emit Withdraw(msg.sender, _pid, _amount);
     }
@@ -234,6 +288,7 @@ contract MasterChefISSV2 is Ownable {
         emit EmergencyWithdraw(msg.sender, _pid, user.amount);
         user.amount = 0;
         user.rewardDebt = 0;
+        user.boostFactor = 1000;
     }
 
     /// @notice Harvest proceeds for msg.sender.
@@ -243,27 +298,35 @@ contract MasterChefISSV2 is Ownable {
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
         uint256 pending = user.amount.mul(pool.accISSPerShare).div(1e12).sub(user.rewardDebt);
-        safeISSTransfer(msg.sender, pending);
-        emit Harvest(msg.sender, _pid, pending);
+        uint256 payout = pending * user.boostFactor * 4 /1e13;
+        rewardsMachine.transferISSforMasterChef(msg.sender, payout);
+        totalClaimedPendingRewards += pending;
         user.rewardDebt = user.amount.mul(pool.accISSPerShare).div(1e12);
+        user.boostFactor = getBoost(msg.sender,_pid);
+        emit Harvest(msg.sender, _pid, payout);
     }
 
-    // Safe ISS transfer function, just in case if rounding error causes pool to not have enough ISS tokens.
-    function safeISSTransfer(address _to, uint256 _amount) internal {
-        uint256 iSSBal = ISS.balanceOf(address(this));
-        if (_amount > iSSBal) {
-            ISS.transfer(_to, iSSBal);
-        } else {
-            ISS.transfer(_to, _amount);
-        }
+    // get the pending rewards which can potentially still be minted
+    function getPendingRewards()
+        public
+        view
+        returns (uint256 totalPendingRewards)
+        {
+        uint256 AccumulatedEmissions = AccumulatedEmissionsAtLastEmissionChange + ((block.timestamp - timeOfLastEmissionChange) * iSSPerSec);
+        totalPendingRewards = AccumulatedEmissions - totalClaimedPendingRewards;
+        return (totalPendingRewards);
     }
 
     
 
     // Pancake has to add hidden dummy pools inorder to alter the emission,
     // here we make it simple and transparent to all.
-    function updateEmissionRate(uint256 _iSSPerSec) public onlyOwner {
+    function updateEmissionRate(uint256 _iSSPerSec) public {
+        require (msg.sender == address(rewardsMachine),"NOT_REWARDS_MACHINE");
         massUpdatePools();
+        AccumulatedEmissionsAtLastEmissionChange += (block.timestamp - timeOfLastEmissionChange) * iSSPerSec;
+        timeOfLastEmissionChange = block.timestamp;
+        
         iSSPerSec = _iSSPerSec;
         emit UpdateEmissionRate(msg.sender, _iSSPerSec);
     }

@@ -198,6 +198,20 @@ contract AssetFactory is Initializable {
 		//MarketFactory(marketFactoryAddress).createPair(getAsset[_symbol].Token2,USDCaddress);
 	}
 
+	/**
+	* @notice A method to create the market pairs for a new asset.
+	* @param _symbol Symbol of the new Asset.
+	*/
+	function createMarketPairs (
+		string calldata _symbol
+		) 
+		external 
+		//onlyOwner
+		{
+		require (getAsset[_symbol].exists,'DOES_NOT_EXIST');
+		MarketFactory(marketFactoryAddress).createPair(getAsset[_symbol].Token1,USDCaddress);
+		MarketFactory(marketFactoryAddress).createPair(getAsset[_symbol].Token2,USDCaddress);
+	}
 
 	/**
 	* @notice A method that checks if a specific asset does already exist.

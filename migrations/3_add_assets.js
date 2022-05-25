@@ -14,6 +14,7 @@ const DAO = artifacts.require("./DAO.sol");
 const AssetToken = artifacts.require("./AssetToken.sol");
 const Upgrader = artifacts.require("./Upgrader.sol");
 const ERC20 = artifacts.require("../openzeppelin/ERC20.sol");
+const MasterChef = artifacts.require("./MasterChef.sol");
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 const { admin } = require('@openzeppelin/truffle-upgrades');
 var USDCaddress = "";
@@ -38,6 +39,14 @@ const dAOAmount = BigInt(5000000) * BigInt(1e18)
 const rewardsAmount = BigInt(50000000) * BigInt(1e18)
 
 // JavaScript export
+
+async function sleep() {
+        await timeout(5000);
+      
+    }
+function timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
 module.exports = async function(deployer,network,accounts) {
     var ISSAddress;
@@ -76,11 +85,12 @@ module.exports = async function(deployer,network,accounts) {
     marketFactory= await MarketFactory.deployed()
     marketRouter = await MarketRouter.deployed()
     upgrader = await Upgrader.deployed()
+    masterChef = await MasterChef.deployed()
     
 
 
     var assets = []
-    //assets.push(["Dow Jones Industrial Average Index", "DJIA", "US Equity Index (30 main US-Stocks). ISIN: US2605661048",60000000,34607000])
+    assets.push(["Dow Jones Industrial Average Index", "DJIA", "US Equity Index (30 main US-Stocks). ISIN: US2605661048",60000000,34607000])
     //assets.push(["NASDAQ 100 Index", "NDX", "US Equity Index (100 largest non-fin. NASDAQ listed comp.). ISIN: US6311011026 ",30000000,15444000])
     //assets.push(["Standard & Poors 500 Index", "S500", "US Equity Index (500 largest listed US Companies). ISIN: US78378X1072",10000000,4460000])
     //assets.push(["WTI crude oil", "WTI", "WTI crude oil Price (Spot) in USD. ISIN: XD0015948363",150000,70000])
@@ -123,21 +133,21 @@ module.exports = async function(deployer,network,accounts) {
             console.log("market pair 2 added")
         }
 
-        
+        await sleep()
+
         pair1 = await marketFactory.getPair(token1,USDCaddress);
         pair2 = await marketFactory.getPair(token2,USDCaddress);
-        await rewardsMachine.addPools(symbol);
-        if (pair2 =! '0x0000000000000000000000000000000000000000'){
+        let r = await rewardsMachine.addPools(symbol);
+        
+        if (pair2 !== '0x0000000000000000000000000000000000000000'){
             
             console.log("Pools added");
         }
         else{
             console.log("Pool could not be added")
         }
-        //await marketFactory.createPair(token2,USDCaddress);
-        //let pair2 = await marketFactory.getMarketPair(token2,USDCaddress);
-        //await rewardsMachine.addPool(pair2,symbol);
-        //console.log("Pool 2 added");
+        let x = await masterChef.poolInfo(0)
+        console.log(x)
     }   
     
     await marketFactory.createPair(ISSAddress,USDCaddress);
@@ -221,10 +231,16 @@ module.exports = async function(deployer,network,accounts) {
     //Change ownership of the proxy contracts to the upgrader contract
     //await admin.transferProxyAdminOwnership(upgrader.address);
 
-    await governanceToken.transfer(dAO.address,dAOAmount)
-    await governanceToken.transfer(rewardsMachine.address,rewardsAmount)
-    console.log("DAO and RewardsMachine share of the GovernanceToken transferred")
-
+    if (network === 'development'){
+        await governanceToken.mint(dAO.address,dAOAmount)
+        await governanceToken.mint(rewardsMachine.address,rewardsAmount)
+        console.log("DAO and RewardsMachine share of the GovernanceToken transferred")
+    }
+    else {
+        await governanceToken.transfer(dAO.address,dAOAmount)
+        await governanceToken.transfer(rewardsMachine.address,rewardsAmount)
+        console.log("DAO and RewardsMachine share of the GovernanceToken minted")
+    }
     try{
         //Transfer ISS to DAO and RewardsMachine
         b = await governanceToken.balanceOf(rewardsMachine.address)
@@ -257,6 +273,7 @@ module.exports = async function(deployer,network,accounts) {
     console.log("Upgrader: ",Upgrader.address)
     console.log("MarktRouter: ",MarketRouter.address)
     console.log("VotingEscrow: ", VotingEscrow.address)  
+    console.log("MasterChef: ", MasterChef.address)  
   
 
  
