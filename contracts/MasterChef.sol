@@ -173,7 +173,7 @@ contract MasterChef {
         public
         view 
         returns (
-            uint256 boostFactor
+            uint256
         )
     {
         PoolInfo storage pool = poolInfo[_pid]; //get pool data
@@ -181,7 +181,10 @@ contract MasterChef {
         uint256 veISSBalance = votingEscrow.balanceOf(_address);
         uint256 totalVeISS = votingEscrow.totalSupply();
         uint256 lpSupply = pool.lpToken.balanceOf(address(this));
-        boostFactor = 1e12 + (user.amount * 1e12 *  totalVeISS / veISSBalance / lpSupply);
+        if (veISSBalance == 0 || lpSupply == 0){
+            return(1e12);
+        }
+        uint256 boostFactor = 1e12 + (user.amount * 1e12 *  totalVeISS / veISSBalance / lpSupply);
         if (boostFactor > 25 * 1e11) {
             boostFactor = 25 * 1e11;
         }
@@ -246,7 +249,8 @@ contract MasterChef {
         if (user.amount > 0) {
             // Harvest ISS
             uint256 pending = user.amount.mul(pool.accISSPerShare).div(1e12).sub(user.rewardDebt);
-            uint256 payout = pending * user.boostFactor * 4 /1e13;
+            //uint256 payout = pending * user.boostFactor * 4 /1e13;
+            uint256 payout = pending;
             rewardsMachine.transferISSforMasterChef(msg.sender, payout);
             totalClaimedPendingRewards += pending;
             emit Harvest(msg.sender, _pid, payout);

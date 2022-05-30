@@ -66,7 +66,7 @@ module.exports = async function(deployer,network,accounts) {
     else if (network === "fantomTestnet") {ISSAddress = "0x56e09a54bed3dEF906d29dC721b0AB3586E9E021"}
 
     else if (network === "kovan") {ISSAddress = "0x72aB53a133b27Fa428ca7Dc263080807AfEc91b5"} 
-    else if (network === "development") {ISSAddress = "0x356F26716Fe237aD540F53D926D557Ae352Ea73E"; USDCaddress = "0x055Ca4CCe0bf1D35e8D7953F5eCaDD0640Be8D46"}
+    else if (network === "development") {ISSAddress = "0xF08354D6d5EF0BCe036E47c65e698eFc27b82721"; USDCaddress = "0x055Ca4CCe0bf1D35e8D7953F5eCaDD0640Be8D46"}
     
     console.log("ISS Address: ",ISSAddress)
     const governanceToken = await GovernanceToken.at(ISSAddress);
@@ -209,6 +209,12 @@ module.exports = async function(deployer,network,accounts) {
         //console.log(shortTokenVolume.toString())
         await marketRouter.addLiquidity(tokenLong, USDCaddress,longTokenVolume.toString(),longUSDAmount.toString(),'1000000000000000',(asset[4]*1).toString(),myAddress,'1829861859');
         await marketRouter.addLiquidity(tokenShort, USDCaddress,shortTokenVolume.toString(),shortUSDAmount.toString(),'1000000000000000',((asset[3]-asset[4])*1).toString(),myAddress,'1829861859')
+        let poolInfo = await masterChef.poolInfo(0)
+        let lpToken = poolInfo['lpToken']
+        console.log(lpToken)
+        let lpTokenContract = await ERC20.at(lpToken);
+        await lpTokenContract.approve(MasterChef.address,'1000000000000000000000000000000000000000')
+        await masterChef.deposit(0,100)
 
     }
     pair = await marketFactory.getPair(ISSAddress,USDCaddress);

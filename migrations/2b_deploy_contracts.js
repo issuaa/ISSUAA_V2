@@ -61,7 +61,7 @@ module.exports = async function(deployer,network,accounts) {
     else if (network === "fantomTestnet") {ISSAddress = "0x56e09a54bed3dEF906d29dC721b0AB3586E9E021"}
     
     else if (network === "kovan") {ISSAddress = "0x72aB53a133b27Fa428ca7Dc263080807AfEc91b5"}    
-    else if (network === "development") {ISSAddress = "0x356F26716Fe237aD540F53D926D557Ae352Ea73E"; USDCaddress = "0x055Ca4CCe0bf1D35e8D7953F5eCaDD0640Be8D46"}
+    else if (network === "development") {ISSAddress = "0xF08354D6d5EF0BCe036E47c65e698eFc27b82721"; USDCaddress = "0x055Ca4CCe0bf1D35e8D7953F5eCaDD0640Be8D46"}
     const governanceToken = await GovernanceToken.at(ISSAddress);
     
 
